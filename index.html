@@ -1,1 +1,163 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>Espaço Aylas</title><style>:root{--primary:#37254c;--lilac:#CFC1E8;--offwhite:#f5f1ea;--lightgray:#e9e7e4;--dark:#1a1520;--white:#fff;--success:#4a9d6f;--critical:#c23b22;--neutral:#999}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,"Segoe UI","Inter",sans-serif;background:var(--offwhite);color:var(--dark)}h1{font-size:clamp(1.5rem,6vw,2.5rem);color:var(--primary)}.container{max-width:600px;margin:0 auto;padding:1.5rem 1rem}.archetype-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;min-height:44px}.archetype-card{background:var(--white);border:2px solid var(--lightgray);border-radius:12px;padding:1rem}.archetype-content{max-height:0;overflow:hidden;transition:max-height .3s}.archetype-content.open{max-height:1500px}.toggle-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;transition:transform .3s}.toggle-icon.open{transform:rotate(180deg)}input{font-size:16px;padding:12px;border:1px solid var(--lightgray);border-radius:8px;width:100%;min-height:44px}button{font-family:inherit;padding:12px 1rem;border:0;border-radius:8px;cursor:pointer;min-height:44px;width:100%}.btn-primary{background:var(--primary);color:var(--white)}.btn-secondary{background:var(--lilac);color:var(--primary)}.btn-danger{background:var(--critical);color:var(--white)}</style></head><body><div class="container"><h1>Espaço Aylas</h1><form id="f"><div id="a"></div><button>Enviar</button></form></div><script>const A=[{id:"sol",name:"Painel Solar"},{id:"gato",name:"Gato"},{id:"chi",name:"Chicletes"},{id:"agi",name:"Agitado"},{id:"ant",name:"Antissocial"},{id:"ove",name:"Ovelha"},{id:"can",name:"Cantor"}];let s={};function init(){A.forEach(x=>{s[x.id]=[];const d=document.createElement("div");d.className="archetype-card";d.innerHTML="<div class="archetype-header" onclick="toggle(\"" + x.id + "\")" style="cursor:pointer"><div>" + x.name + "</div><div class="toggle-icon" id="i-" + x.id + "">▼</div></div><div class="archetype-content" id="c-" + x.id + ""><button class="btn-secondary" onclick="add(\"" + x.id + "\")" type="button">+ Cão</button></div>";document.getElementById("a").appendChild(d)})}function toggle(id){document.getElementById("c-" + id).classList.toggle("open");document.getElementById("i-" + id).classList.toggle("open")}function add(id){const e=document.createElement("div");e.innerHTML="<input placeholder="Nome" required><input placeholder="Raça"><input type="file" accept="image/*"><button class="btn-danger">X</button>";document.getElementById("c-" + id).insertBefore(e,document.getElementById("c-" + id).lastElementChild)}document.getElementById("f").addEventListener("submit",e=>{e.preventDefault();alert("Formulário pronto! Configure Apps Script URL")});init()</script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Espaço Aylas - Arquetipos</title>
+<style>
+:root {
+  --primary: #37254c;
+  --lilac: #CFC1E8;
+  --offwhite: #f5f1ea;
+  --lightgray: #e9e7e4;
+  --dark: #1a1520;
+  --white: #ffffff;
+  --success: #4a9d6f;
+  --critical: #c23b22;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, sans-serif; background: var(--offwhite); color: var(--dark); }
+.container { max-width: 600px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 2rem; color: var(--primary); margin-bottom: 2rem; text-align: center; }
+.archetypes { display: flex; flex-direction: column; gap: 1rem; }
+.card { background: var(--white); border: 2px solid var(--lightgray); border-radius: 12px; padding: 1rem; }
+.header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; min-height: 44px; }
+.title { font-size: 1.1rem; color: var(--primary); font-weight: 600; }
+.icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; }
+.icon.open { transform: rotate(180deg); }
+.content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+.content.open { max-height: 2000px; }
+.dogs { margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+.dog { background: var(--offwhite); border: 1px solid var(--lightgray); border-radius: 8px; padding: 1rem; }
+.form-group { margin-bottom: 0.75rem; }
+label { display: block; font-weight: 500; color: var(--primary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+input { font-size: 16px; padding: 12px; border: 1px solid var(--lightgray); border-radius: 8px; background: var(--white); color: var(--dark); width: 100%; min-height: 44px; }
+input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(55, 37, 76, 0.1); }
+img { max-width: 200px; width: 100%; margin-top: 0.5rem; border-radius: 8px; }
+button { font-family: inherit; font-size: 1rem; padding: 12px 1rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; min-height: 44px; width: 100%; }
+.btn-primary { background: var(--primary); color: var(--white); margin-top: 2rem; }
+.btn-primary:active { background: #5c4478; }
+.btn-secondary { background: var(--lilac); color: var(--primary); margin-top: 0.75rem; }
+.btn-secondary:active { background: rgba(207, 193, 232, 0.7); }
+.btn-danger { background: var(--critical); color: var(--white); font-size: 0.875rem; padding: 8px; margin-top: 0.5rem; }
+.btn-danger:active { background: rgba(194, 59, 34, 0.8); }
+footer { text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--lightgray); }
+.footer-text { font-size: 0.75rem; color: #999; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Espaço Aylas</h1>
+  <form id="form">
+    <div id="archetypes" class="archetypes"></div>
+    <footer>
+      <button type="submit" class="btn-primary">Enviar Formulário</button>
+      <p class="footer-text">Diagnóstico Comportamental</p>
+    </footer>
+  </form>
+</div>
+
+<script>
+const ARCHETYPES = [
+  { id: 'painel-solar', name: 'Painel Solar ☀️' },
+  { id: 'gato', name: 'Gato Disfarçado 🐱' },
+  { id: 'chicletes', name: 'Chicletes 🎀' },
+  { id: 'agitado', name: 'Agitado ⚡' },
+  { id: 'antissocial', name: 'Antissocial 🤐' },
+  { id: 'ovelha', name: 'Ovelha 🐑' },
+  { id: 'cantor', name: 'Cantor 🎵' }
+];
+
+const SCRIPT_URL = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+let state = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('archetypes');
+  
+  ARCHETYPES.forEach(arch => {
+    state[arch.id] = [];
+    
+    const card = document.createElement('div');
+    card.className = 'card';
+    
+    const header = document.createElement('div');
+    header.className = 'header';
+    header.onclick = () => toggleCard(arch.id);
+    header.innerHTML = '<div class="title">' + arch.name + '</div><div class="icon" id="icon-' + arch.id + '">▼</div>';
+    
+    const content = document.createElement('div');
+    content.className = 'content';
+    content.id = 'content-' + arch.id;
+    
+    const dogsDiv = document.createElement('div');
+    dogsDiv.className = 'dogs';
+    dogsDiv.id = 'dogs-' + arch.id;
+    
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'btn-secondary';
+    addBtn.textContent = '+ Adicionar Cão';
+    addBtn.onclick = () => addDog(arch.id);
+    
+    content.appendChild(dogsDiv);
+    content.appendChild(addBtn);
+    
+    card.appendChild(header);
+    card.appendChild(content);
+    container.appendChild(card);
+  });
+});
+
+function toggleCard(id) {
+  const content = document.getElementById('content-' + id);
+  const icon = document.getElementById('icon-' + id);
+  content.classList.toggle('open');
+  icon.classList.toggle('open');
+}
+
+function addDog(archetypeId) {
+  const idx = state[archetypeId].length;
+  const entryId = archetypeId + '-' + idx;
+  state[archetypeId].push({ id: entryId, name: '', breed: '' });
+  
+  const dogsDiv = document.getElementById('dogs-' + archetypeId);
+  const entry = document.createElement('div');
+  entry.className = 'dog';
+  entry.id = entryId;
+  
+  entry.innerHTML = '<div class="form-group"><label>Nome</label><input type="text" placeholder="Ex: Rex" required></div>' +
+    '<div class="form-group"><label>Raça</label><input type="text" placeholder="Ex: Labrador"></div>' +
+    '<div class="form-group"><label>Foto</label><input type="file" accept="image/*"></div>';
+  
+  const removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.className = 'btn-danger';
+  removeBtn.textContent = '✕ Remover';
+  removeBtn.onclick = () => removeDog(archetypeId, idx, entryId);
+  
+  entry.appendChild(removeBtn);
+  dogsDiv.appendChild(entry);
+}
+
+function removeDog(archetypeId, idx, entryId) {
+  const entry = document.getElementById(entryId);
+  if (entry) entry.remove();
+  state[archetypeId].splice(idx, 1);
+}
+
+document.getElementById('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  if (SCRIPT_URL === 'COLE_AQUI_A_URL_DO_APPS_SCRIPT') {
+    alert('Configure a URL do Google Apps Script');
+    return;
+  }
+  
+  alert('Formulário pronto! Configure a URL do Apps Script para enviar.');
+});
+</script>
+
+</body>
+</html>
