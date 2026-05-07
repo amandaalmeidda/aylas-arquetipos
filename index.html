@@ -539,8 +539,16 @@ async function submitForm() {
         body: JSON.stringify(payload)
       });
 
-      const result = await response.json();
-      if (!result.success) throw new Error(result.error);
+      let result;
+      try {
+        result = await response.json();
+      } catch (e) {
+        const text = await response.text();
+        console.error('Resposta inválida:', text);
+        throw new Error('Apps Script retornou erro: ' + text.substring(0, 100));
+      }
+
+      if (!result.success) throw new Error(result.error || 'Erro desconhecido');
     }
 
     statusDiv.textContent = '✅ Formulário enviado com sucesso!';
@@ -551,7 +559,7 @@ async function submitForm() {
 
   } catch (error) {
     console.error('Erro:', error);
-    statusDiv.textContent = '❌ Erro ao enviar. Tente novamente.';
+    statusDiv.textContent = '❌ ' + (error.message || 'Erro ao enviar. Tente novamente.');
     statusDiv.className = 'status-message error';
   } finally {
     submitBtn.disabled = false;
