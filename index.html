@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elenco de Arquétipos · Espaço Aylas</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Olmeda Agency Design System */
+    --primary: #37254c;
+    --primary-hover: #5c4478;
+    --lilac: #CFC1E8;
+    --cream: #f4e6bb;
+    --offwhite: #f5f1ea;
+    --lightgray: #e9e7e4;
+    --dark: #1a1520;
+    --white: #ffffff;
+    --success: #4a9d6f;
+    --warning: #d4a574;
+    --critical: #c23b22;
+    --neutral: #999999;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--offwhite);
+    color: var(--dark);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  .header {
+    background: var(--primary);
+    padding: 40px 24px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(207,193,232,0.08) 40px,
+      rgba(207,193,232,0.08) 41px
+    );
+  }
+  .header-paw {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: var(--lilac);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .intro-banner {
+    background: var(--lilac);
+    border-bottom: 1px solid var(--lightgray);
+    padding: 20px 24px;
+    text-align: center;
+  }
+  .intro-banner p {
+    font-size: 14px;
+    color: var(--dark);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .intro-banner strong { font-weight: 500; color: var(--primary); }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--primary);
+    font-weight: 500;
+    margin: 40px 0 16px;
+  }
+
+  .archetype-card {
+    background: var(--white);
+    border: 1px solid var(--lightgray);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .archetype-card:focus-within {
+    box-shadow: 0 4px 20px rgba(55, 37, 76, 0.12);
+    border-color: var(--lilac);
+  }
+
+  .card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--lightgray);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-emoji {
+    font-size: 28px;
+    width: 48px;
+    height: 48px;
+    background: var(--lilac);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-title-block { flex: 1; }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+  .card-tagline {
+    font-size: 12px;
+    color: var(--neutral);
+    margin-top: 2px;
+    font-style: italic;
+  }
+  .card-count {
+    font-size: 12px;
+    background: var(--lilac);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .card-count.has-dogs {
+    background: var(--success);
+    color: var(--white);
+  }
+  .toggle-icon {
+    font-size: 18px;
+    color: var(--neutral);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .archetype-card.open .toggle-icon { transform: rotate(180deg); }
+
+  .card-body {
+    padding: 20px 24px 24px;
+    display: none;
+  }
+  .archetype-card.open .card-body { display: block; }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--dark);
+    line-height: 1.65;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--offwhite);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+  }
+
+  .dogs-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .dog-entry {
+    background: var(--offwhite);
+    border: 1px solid var(--lightgray);
+    border-radius: 12px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 72px 1fr 1fr auto;
+    gap: 12px;
+    align-items: center;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .photo-upload {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    border: 1.5px dashed var(--neutral);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    overflow: hidden;
+    background: var(--white);
+    position: relative;
+  }
+  .photo-upload:hover { border-color: var(--primary); background: var(--lilac); }
+  .photo-upload input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .photo-upload img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+  .photo-upload.has-photo img { display: block; }
+  .photo-upload.has-photo .upload-hint { display: none; }
+  .upload-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+  }
+  .upload-hint span { font-size: 10px; color: var(--neutral); text-align: center; line-height: 1.3; }
+  .upload-hint svg { color: var(--neutral); }
+
+  .dog-entry input[type="text"] {
+    border: 1px solid var(--lightgray);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    width: 100%;
+    transition: border-color 0.15s;
+  }
+  .dog-entry input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .dog-entry input[type="text"]::placeholder { color: var(--neutral); }
+
+  .remove-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--lightgray);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neutral);
+    transition: all 0.15s;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .remove-btn:hover { background: #FEF0F0; border-color: #F0BABA; color: var(--critical); }
+
+  .add-dog-btn {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px dashed var(--lightgray);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--dark);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s;
+    margin-top: 12px;
+  }
+  .add-dog-btn:hover { background: var(--lilac); border-color: var(--primary); color: var(--primary); }
+
+  .submit-section {
+    margin-top: 40px;
+    padding: 32px 24px;
+    background: var(--white);
+    border: 1px solid var(--lightgray);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .submit-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+  .submit-section p {
+    font-size: 13px;
+    color: var(--dark);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  .responder-input {
+    display: flex;
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto 20px;
+  }
+  .responder-input input {
+    flex: 1;
+    border: 1px solid var(--lightgray);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'Inter
