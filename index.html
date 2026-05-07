@@ -540,8 +540,6 @@ async function submitForm() {
       });
 
       const responseText = await response.text();
-      alert('Resposta bruta:\n' + responseText);
-
       let result = JSON.parse(responseText);
       if (!result.success) {
         throw new Error(result.error || 'Erro: ' + JSON.stringify(result));
