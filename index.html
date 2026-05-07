@@ -534,21 +534,28 @@ async function submitForm() {
         submittedBy: responderName
       };
 
+      console.log('Enviando payload:', payload);
       const response = await fetch(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify(payload)
       });
 
+      console.log('Status da resposta:', response.status);
+      const responseText = await response.text();
+      console.log('Texto da resposta:', responseText);
+
       let result;
       try {
-        result = await response.json();
+        result = JSON.parse(responseText);
       } catch (e) {
-        const text = await response.text();
-        console.error('Resposta inválida:', text);
-        throw new Error('Apps Script retornou erro: ' + text.substring(0, 100));
+        console.error('Erro ao parsear JSON:', e, 'Texto recebido:', responseText);
+        throw new Error('Resposta inválida: ' + responseText.substring(0, 100));
       }
 
-      if (!result.success) throw new Error(result.error || 'Erro desconhecido');
+      console.log('Resultado parseado:', result);
+      if (!result.success) {
+        throw new Error(result.error || 'Erro desconhecido do Apps Script');
+      }
     }
 
     statusDiv.textContent = '✅ Formulário enviado com sucesso!';
@@ -558,8 +565,8 @@ async function submitForm() {
     renderDogs();
 
   } catch (error) {
-    console.error('Erro:', error);
-    statusDiv.textContent = '❌ ' + (error.message || 'Erro ao enviar. Tente novamente.');
+    console.error('Erro completo:', error);
+    statusDiv.textContent = '❌ ' + (error.message || 'Erro ao enviar. Verifique console.');
     statusDiv.className = 'status-message error';
   } finally {
     submitBtn.disabled = false;
