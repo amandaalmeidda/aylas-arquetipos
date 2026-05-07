@@ -534,27 +534,17 @@ async function submitForm() {
         submittedBy: responderName
       };
 
-      console.log('Enviando payload:', payload);
       const response = await fetch(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify(payload)
       });
 
-      console.log('Status da resposta:', response.status);
       const responseText = await response.text();
-      console.log('Texto da resposta:', responseText);
+      alert('Resposta bruta:\n' + responseText);
 
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (e) {
-        console.error('Erro ao parsear JSON:', e, 'Texto recebido:', responseText);
-        throw new Error('Resposta inválida: ' + responseText.substring(0, 100));
-      }
-
-      console.log('Resultado parseado:', result);
+      let result = JSON.parse(responseText);
       if (!result.success) {
-        throw new Error(result.error || 'Erro desconhecido do Apps Script');
+        throw new Error(result.error || 'Erro: ' + JSON.stringify(result));
       }
     }
 
