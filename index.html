@@ -91,56 +91,75 @@
   .description p { margin-bottom: 12px; }
   .description p:last-child { margin-bottom: 0; }
 
-  .archetypes-section {
-    margin-bottom: 40px;
+  .archetype-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--lightgray);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    cursor: pointer;
+    margin-bottom: 16px;
   }
-  .archetypes-section h2 {
+  .archetype-select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  .registered-dogs {
+    margin-top: 48px;
+    padding: 24px;
+    background: var(--white);
+    border: 1px solid var(--lightgray);
+    border-radius: 16px;
+  }
+  .registered-dogs h3 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(18px, 5vw, 28px);
+    font-size: 20px;
     font-weight: 600;
     color: var(--primary);
-    margin-bottom: 20px;
-    text-align: center;
+    margin-bottom: 16px;
   }
-
-  .archetypes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .archetype-card {
-    border: 1px solid var(--lightgray);
-    border-radius: 12px;
-    padding: 16px;
-    background: var(--white);
-    cursor: pointer;
-    transition: all 0.2s;
+  .registered-dogs-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    min-height: 100px;
-    justify-content: center;
+    gap: 12px;
+  }
+  .registered-dog-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: var(--offwhite);
+    border-radius: 8px;
     align-items: center;
-    text-align: center;
   }
-  .archetype-card:hover, .archetype-card.active {
-    background: var(--lilac);
-    border-color: var(--primary);
-    transform: translateY(-2px);
+  .registered-dog-item img {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    object-fit: cover;
   }
-  .archetype-card span {
-    font-size: 12px;
-    color: var(--dark);
-    font-weight: 500;
+  .registered-dog-info {
+    flex: 1;
   }
-  .archetype-card h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(14px, 3vw, 16px);
-    font-weight: 600;
+  .registered-dog-info strong {
+    display: block;
     color: var(--primary);
-    margin: 0;
+    font-size: 14px;
+  }
+  .registered-dog-info small {
+    display: block;
+    color: var(--neutral);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .no-dogs-message {
+    color: var(--neutral);
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
   }
 
   .dogs-container {
@@ -375,17 +394,17 @@
     <p>A gente acredita que cada cão tem uma personalidade única. Escolha o arquétipo que mais combina com seu peludo, conte um pouco sobre ele e envie pra gente!</p>
   </div>
 
-  <div class="archetypes-section">
-    <h2>Escolha um Arquétipo</h2>
-    <div class="archetypes-grid" id="archetypesGrid"></div>
-  </div>
-
   <div class="dogs-container">
     <h3>Seus Cães</h3>
     <div id="dogsContainer"></div>
     <button class="add-dog-btn" onclick="addDog()">
       <span>+ Adicionar Cão</span>
     </button>
+  </div>
+
+  <div class="registered-dogs" id="registeredDogsSection" style="display: none;">
+    <h3>Cães Já Registrados</h3>
+    <div class="registered-dogs-list" id="registeredDogsList"></div>
   </div>
 
   <div class="submit-section">
@@ -419,32 +438,50 @@ const ARCHETYPES = [
   { name: '🎤 Cantor', desc: 'Vocal e expressivo' }
 ];
 
-let selectedArchetype = null;
 let dogs = [];
+let registeredDogs = [];
 
-function initArchetypes() {
-  const grid = document.getElementById('archetypesGrid');
-  ARCHETYPES.forEach((arch, idx) => {
-    const card = document.createElement('div');
-    card.className = 'archetype-card';
-    card.innerHTML = `<h3>${arch.name}</h3><span>${arch.desc}</span>`;
-    card.onclick = () => selectArchetype(idx, card);
-    grid.appendChild(card);
-  });
+function loadRegisteredDogs() {
+  const stored = localStorage.getItem('aylas-registered-dogs');
+  registeredDogs = stored ? JSON.parse(stored) : [];
+  displayRegisteredDogs();
 }
 
-function selectArchetype(idx, card) {
-  document.querySelectorAll('.archetype-card').forEach(c => c.classList.remove('active'));
-  card.classList.add('active');
-  selectedArchetype = idx;
+function saveRegisteredDog(dog, photoUrl) {
+  registeredDogs.unshift({
+    archetype: dog.archetype,
+    name: dog.name || 'Sem nome',
+    breed: dog.breed || 'Não informada',
+    photo: photoUrl,
+    date: new Date().toLocaleDateString('pt-BR')
+  });
+  localStorage.setItem('aylas-registered-dogs', JSON.stringify(registeredDogs));
+  displayRegisteredDogs();
+}
+
+function displayRegisteredDogs() {
+  const section = document.getElementById('registeredDogsSection');
+  const list = document.getElementById('registeredDogsList');
+
+  if (registeredDogs.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  list.innerHTML = registeredDogs.map(dog => `
+    <div class="registered-dog-item">
+      ${dog.photo ? `<img src="${dog.photo}" alt="${dog.name}">` : ''}
+      <div class="registered-dog-info">
+        <strong>${dog.name} — ${dog.archetype}</strong>
+        <small>${dog.breed} • ${dog.date}</small>
+      </div>
+    </div>
+  `).join('');
 }
 
 function addDog() {
-  if (selectedArchetype === null) {
-    alert('Escolha um arquétipo primeiro!');
-    return;
-  }
-  dogs.push({ archetype: selectedArchetype, name: '', breed: '', photo: null });
+  dogs.push({ archetype: 0, name: '', breed: '', photo: null });
   renderDogs();
 }
 
@@ -456,34 +493,41 @@ function removeDog(idx) {
 function renderDogs() {
   const container = document.getElementById('dogsContainer');
   container.innerHTML = dogs.map((dog, idx) => `
-    <div class="dog-entry">
-      <label class="photo-upload" onclick="document.getElementById('photo${idx}').click()">
-        <input type="file" id="photo${idx}" accept="image/*" onchange="handlePhoto(${idx}, event)">
-        <div class="upload-hint">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5"/>
-            <path d="M21 15l-5-5L5 21"/>
-          </svg>
-          <span>Foto</span>
+    <div class="dog-entry" style="flex-direction: column; align-items: stretch;">
+      <select class="archetype-select" onchange="dogs[${idx}].archetype = parseInt(this.value)">
+        ${ARCHETYPES.map((arch, i) => `
+          <option value="${i}" ${dog.archetype === i ? 'selected' : ''}>${arch.name}</option>
+        `).join('')}
+      </select>
+      <div style="display: flex; gap: 12px;">
+        <label class="photo-upload" onclick="document.getElementById('photo${idx}').click()">
+          <input type="file" id="photo${idx}" accept="image/*" onchange="handlePhoto(${idx}, event)">
+          <div class="upload-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5L5 21"/>
+            </svg>
+            <span>Foto</span>
+          </div>
+          <img>
+        </label>
+        <div class="dog-info">
+          <input
+            type="text"
+            placeholder="Nome"
+            value="${dog.name}"
+            oninput="dogs[${idx}].name = this.value"
+          >
+          <input
+            type="text"
+            placeholder="Raça"
+            value="${dog.breed}"
+            oninput="dogs[${idx}].breed = this.value"
+          >
         </div>
-        <img>
-      </label>
-      <div class="dog-info">
-        <input
-          type="text"
-          placeholder="Nome"
-          value="${dog.name}"
-          onchange="dogs[${idx}].name = this.value"
-        >
-        <input
-          type="text"
-          placeholder="Raça"
-          value="${dog.breed}"
-          onchange="dogs[${idx}].breed = this.value"
-        >
+        <button class="remove-btn" onclick="removeDog(${idx})">✕</button>
       </div>
-      <button class="remove-btn" onclick="removeDog(${idx})">✕</button>
     </div>
   `).join('');
 }
@@ -514,7 +558,7 @@ async function submitForm() {
     return;
   }
 
-  if (!selectedArchetype && dogs.length === 0) {
+  if (dogs.length === 0) {
     statusDiv.textContent = '❌ Adicione pelo menos um cão';
     statusDiv.className = 'status-message error';
     return;
@@ -530,7 +574,7 @@ async function submitForm() {
         archetype: ARCHETYPES[dog.archetype].name,
         dogName: dog.name || 'Sem nome',
         breed: dog.breed || 'Não informada',
-        photoBase64: dog.photo,
+        photoBase64: dog.photo || null,
         submittedBy: responderName
       };
 
@@ -544,6 +588,8 @@ async function submitForm() {
       if (!result.success) {
         throw new Error(result.error || 'Erro: ' + JSON.stringify(result));
       }
+
+      saveRegisteredDog(dog, result.photoLink || null);
     }
 
     statusDiv.textContent = '✅ Formulário enviado com sucesso!';
@@ -562,7 +608,9 @@ async function submitForm() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', initArchetypes);
+document.addEventListener('DOMContentLoaded', () => {
+  loadRegisteredDogs();
+});
 </script>
 
 </body>
